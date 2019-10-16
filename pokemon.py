@@ -33,6 +33,13 @@ class Pokemon:
         self.attack_power = 3
         self.defense = 5
 
+    def __repr__(self):
+        print(f"""
+        {self.name} is a level {self.level} {self.ptype} Pokemon, currently a {self.evolution[self.evolution_stage]}.
+        Their health is {self.current_health} out of {self.max_health}.
+        {self.name} has {self.experience} experience, {self.speed} speed, {self.attack_power} attack, and {self.defense} defense.
+        """)
+
     def level_up(self, increase=1):
         self.level += increase
         self.max_health = self.level * 10
@@ -44,6 +51,10 @@ class Pokemon:
 
     def increase_health(self, increase):
         self.current_health += increase
+        if self.current_health > self.max_health:
+            self.current_health = self.max_health
+        if self.knocked_out == True:
+            self.revive()
         print(f"{self.name}\'s health increased to {self.current_health}")
 
     def decrease_health(self, decrease):
@@ -56,10 +67,13 @@ class Pokemon:
         if self.current_health == 0:
             self.knocked_out = True
             print(f"{self.name} is knocked out")
+            self.current_health = 0
 
     def revive(self):
         self.knocked_out = False
-        print(f"{self.name} has been revived")
+        if self.current_health == 0:
+            self.current_health = 1
+        print(f"{self.name} has been revived with {self.current_health} health points")
 
     def attack(self, pokemon):
         if self.knocked_out:
@@ -104,6 +118,12 @@ class Trainer:
         self.potions = potions
         self.currently_active_pokemon = currently_active_pokemon
 
+    def __repr__(self):
+        print(f"""
+        The trainer {self.name} trains {pokemon.name for pokemon in self.list_of_pokemon}.
+        {self.list_of_pokemon[self.currently_active_pokemon].name} is currently active.
+        """)
+
     def get_active_pokemon(self):
         return self.list_of_pokemon[self.currently_active_pokemon]
 
@@ -145,7 +165,7 @@ Eliza.switch_pokemon(1)
 GR.switch_pokemon(2)
 
 print("Battle")
-aleph.battle(leo)
+bet.battle(leo)
 
 
 
