@@ -5,6 +5,20 @@ class Pokemon:
         "Grass": {"Fire": 0.5, "Water": 2, "Grass": 1}
     }
 
+    evolution = {
+        0: "Infant",
+        1: "Baby",
+        2: "Toddler",
+        3: "Child",
+        4: "Adolescent",
+        5: "Advanced Adolescent",
+        6: "Adult",
+        7: "Middle-Aged",
+        8: "Senior",
+        9: "Ancient",
+        10: "Elder",
+    }
+
     def __init__(self, name, level, ptype, avatar='default_pokemon.gif'):
         self.name = name
         self.level = level
@@ -13,11 +27,20 @@ class Pokemon:
         self.max_health = self.level * 10
         self.current_health = self.max_health
         self.knocked_out = False
+        self.experience = 0
+        self.evolution_stage = 1
+        self.speed = 5
+        self.attack_power = 3
+        self.defense = 5
 
     def level_up(self, increase=1):
         self.level += increase
         self.max_health = self.level * 10
+        #self.experience = 0
         print(f'{self.name} is now at level {self.level}, with maximum health {self.max_health}!')
+        if self.level % 5 == 0:
+            self.evolution_stage = self.level / 5
+        print(f"Congratulations, {self.name} has evolved to {self.evolution[self.evolution_stage]}")
 
     def increase_health(self, increase):
         self.current_health += increase
@@ -46,8 +69,30 @@ class Pokemon:
         else:
             print(f"{self.name} is attacking {pokemon.name}")
             damage = self.level * self.attack_by_type[self.ptype][pokemon.ptype]
-            print(f"{self.name} is a {self.ptype} Pokemon, and {pokemon.name} is a {pokemon.ptype} Pokemon. {self.name} does {damage} points of damage to {pokemon.name}")
+            #print(f"{self.name} is a {self.ptype} Pokemon, and {pokemon.name} is a {pokemon.ptype} Pokemon. {self.name} does {damage} points of damage to {pokemon.name}")
+            print(f"{self.name} does {damage} points of damage to {pokemon.name}")
             pokemon.decrease_health(damage)
+            self.experience += 1
+            pokemon.experience += 1
+            if self.experience == self.level * 10:
+                self.level_up(1)
+            if pokemon.experience == pokemon.level * 10:
+                pokemon.level_up(1)
+
+    def battle(self, opponent):
+        for _ in range(3):
+            if self.speed >= opponent.speed:
+                self.attack(opponent)
+                opponent.attack(self)
+            else:
+                opponent.attack(self)
+                self.attack(opponent)
+
+
+class Charmander(Pokemon):
+    def __init__(self, name, level, ptype, avatar='default_pokemon.gif'):
+        super().__init__(self, name, level, ptype, avatar='default_pokemon.gif')
+
 
 class Trainer:
     def __init__(self, name, list_of_pokemon, potions=0, currently_active_pokemon=0):
@@ -98,6 +143,9 @@ bet.attack(leo)
 
 Eliza.switch_pokemon(1)
 GR.switch_pokemon(2)
+
+print("Battle")
+aleph.battle(leo)
 
 
 
